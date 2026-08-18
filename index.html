@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2F4A42">
+<title>Mawar Cantigi · Garut</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --kabut:#E8EDEC; --kertas:#FBFAF7; --lumut:#2F4A42; --lumut-2:#5C736C;
+  --bambu:#C08A3E; --uv:#5E9A93; --mawar:#A32B47; --garis:#CBD8D4;
+  --disp:"Bricolage Grotesque",system-ui,sans-serif;
+  --body:"Instrument Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{margin:0;padding:0}
+body{
+  background:var(--kabut);font-family:var(--body);color:var(--lumut);
+  font-size:15px;line-height:1.5;
+  background-image:radial-gradient(circle at 50% 0%,#F2F6F5 0%,#E8EDEC 55%,#DFE7E5 100%);
+  background-attachment:fixed;
+}
+.wrap{max-width:460px;margin:0 auto;padding:0 16px calc(40px + env(safe-area-inset-bottom))}
+
+/* ---------- kepala ---------- */
+header{padding:26px 0 14px}
+.eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--lumut-2);display:flex;justify-content:space-between;align-items:baseline}
+.eyebrow b{color:var(--bambu);font-weight:600}
+h1{font-family:var(--disp);font-weight:800;font-size:33px;line-height:.98;letter-spacing:-.025em;
+  margin:9px 0 4px}
+h1 em{font-style:normal;display:block;color:var(--uv)}
+.sub{font-size:12.5px;color:var(--lumut-2)}
+
+/* ---------- neraca (signature) ---------- */
+.neraca{background:var(--kertas);border:1px solid var(--garis);border-radius:3px;
+  padding:20px 18px 16px;margin-top:16px;position:relative;overflow:hidden}
+.neraca:before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--lumut)}
+.nlabel{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--lumut-2);margin-bottom:20px}
+.beam{position:relative;height:104px;margin:0 4px}
+.axis{position:absolute;left:0;right:0;top:52px;height:1px;background:var(--lumut);opacity:.3}
+.tick{position:absolute;top:48px;width:1px;height:9px;background:var(--lumut);opacity:.22}
+.span{position:absolute;top:47px;height:11px;border-radius:1px}
+.span.ahead{background:repeating-linear-gradient(45deg,rgba(192,138,62,.55) 0 3px,transparent 3px 6px)}
+.span.behind{background:repeating-linear-gradient(45deg,rgba(163,43,71,.5) 0 3px,transparent 3px 6px)}
+.pip{position:absolute;transform:translateX(-50%);white-space:nowrap;
+  display:flex;flex-direction:column;align-items:center;
+  transition:left .6s cubic-bezier(.2,.8,.2,1)}
+.pip .v{font-family:var(--mono);font-size:20px;font-weight:600;line-height:1}
+.pip .l{font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--lumut-2)}
+.pip .stem{width:2px;border-radius:1px}
+.pip.up{top:0;height:52px;justify-content:flex-end}
+.pip.up .l{margin:3px 0 0}
+.pip.up .stem{height:13px;margin-top:3px}
+.pip.dn{top:53px;height:52px}
+.pip.dn .stem{height:13px;margin-bottom:3px}
+.pip.dn .l{margin:0 0 3px}
+.verdict{margin-top:14px;padding-top:13px;border-top:1px solid var(--garis);
+  font-size:13.5px;line-height:1.45}
+.verdict b{font-weight:600}
+.verdict.warn b{color:var(--mawar)}
+.verdict.good b{color:var(--bambu)}
+
+/* ---------- angka ---------- */
+.tiga{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.num{background:var(--kertas);border:1px solid var(--garis);border-radius:3px;padding:13px 14px}
+.num.full{grid-column:1/-1}
+.num .l{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--lumut-2)}
+.num .v{font-family:var(--mono);font-size:21px;font-weight:600;margin-top:3px;letter-spacing:-.02em}
+.num .n{font-size:11.5px;color:var(--lumut-2);margin-top:2px}
+.num .track{height:4px;background:var(--kabut);border-radius:2px;margin-top:9px;overflow:hidden}
+.num .track i{display:block;height:100%;background:var(--uv)}
+
+/* ---------- kartu ---------- */
+section{margin-top:26px}
+h2{font-family:var(--disp);font-weight:600;font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--lumut-2);margin:0 0 10px;display:flex;align-items:center;gap:10px}
+h2:after{content:"";flex:1;height:1px;background:var(--garis)}
+.card{background:var(--kertas);border:1px solid var(--garis);border-radius:3px;padding:16px 15px}
+
+/* ---------- kurva ---------- */
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;color:var(--lumut-2)}
+.legend span{display:flex;align-items:center;gap:5px}
+.swatch{width:15px;height:0;border-top-width:2.5px;border-top-style:solid}
+
+/* ---------- pos ---------- */
+.pos{padding:15px 0;border-bottom:1px solid var(--garis)}
+.pos:first-child{padding-top:2px}
+.pos:last-child{border-bottom:0;padding-bottom:2px}
+.pos .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.pos .nm{font-weight:600;font-size:14px;line-height:1.25}
+.pos .bobot{font-family:var(--mono);font-size:9.5px;color:var(--lumut-2);white-space:nowrap}
+.pos .patokan{font-size:12.5px;color:var(--lumut-2);margin-top:4px;font-style:italic}
+.bars{margin-top:11px;display:grid;grid-template-columns:34px 1fr 48px;gap:7px 9px;align-items:center}
+.bars .k{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--lumut-2)}
+.bar{height:7px;background:var(--kabut);border-radius:1px;position:relative;overflow:hidden}
+.bar i{position:absolute;inset:0 auto 0 0;border-radius:1px;transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.bar .plan{position:absolute;top:-2px;bottom:-2px;width:1.5px;background:var(--lumut);opacity:.45}
+.bars .n{font-family:var(--mono);font-size:11.5px;text-align:right;font-weight:500}
+
+/* ---------- catatan ---------- */
+.note{padding:13px 0;border-bottom:1px solid var(--garis)}
+.note:last-child{border-bottom:0;padding-bottom:0}
+.note:first-child{padding-top:0}
+.note .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--lumut-2);margin-bottom:4px}
+.note p{margin:0;font-size:14px;line-height:1.5}
+.note.issue{border-left:2.5px solid var(--mawar);padding-left:11px;margin-left:-1px}
+.log .when{font-family:var(--mono);font-size:9.5px;color:var(--lumut-2);margin-bottom:3px}
+.log .row{padding:11px 0;border-bottom:1px solid var(--garis)}
+.log .row:last-child{border-bottom:0;padding-bottom:0}
+.log .row:first-child{padding-top:0}
+
+.empty{font-size:13.5px;color:var(--lumut-2);text-align:center;padding:18px 8px;line-height:1.5}
+footer{margin-top:30px;padding-top:16px;border-top:1px solid var(--garis);
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;color:var(--lumut-2);
+  display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+
+/* ---------- gerbang PIN ---------- */
+#gate{position:fixed;inset:0;background:var(--lumut);z-index:50;display:flex;
+  align-items:center;justify-content:center;padding:24px}
+#gate .box{max-width:300px;width:100%;text-align:center;color:var(--kabut)}
+#gate h1{color:var(--kertas);font-size:27px;margin-bottom:6px}
+#gate h1 em{color:var(--bambu)}
+#gate p{font-size:13px;color:#A8BDB6;margin:0 0 22px}
+#gate input{width:100%;padding:13px;border:1px solid #4A6259;background:#263D36;color:var(--kertas);
+  border-radius:3px;font-family:var(--mono);font-size:18px;text-align:center;letter-spacing:.4em}
+#gate input:focus{outline:2px solid var(--bambu);outline-offset:1px}
+#gate button{width:100%;margin-top:10px;padding:13px;border:0;border-radius:3px;
+  background:var(--bambu);color:#2A1C08;font-family:var(--body);font-weight:600;font-size:14px;cursor:pointer}
+#gate .err{color:#E8899E;font-size:12.5px;margin-top:10px;min-height:18px}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div id="gate" hidden>
+  <div class="box">
+    <h1>Mawar<em>Cantigi</em></h1>
+    <p>Laporan lapangan untuk investor</p>
+    <input id="pin" type="tel" inputmode="numeric" maxlength="6" placeholder="••••" aria-label="Kode akses">
+    <button id="masuk">Buka laporan</button>
+    <div class="err" id="gerr"></div>
+  </div>
+</div>
+
+<div class="wrap" id="app" hidden>
+  <header>
+    <div class="eyebrow"><span id="ew">—</span><b id="ed">—</b></div>
+    <h1>Mawar<em>Cantigi</em></h1>
+    <div class="sub">Bayongbong, Garut &middot; 2.000 m² &middot; 20.000 pohon</div>
+  </header>
+
+  <div class="neraca">
+    <div class="nlabel">Kerja &amp; uang, di satu garis</div>
+    <div class="beam" id="beam"></div>
+    <div class="verdict" id="verdict"></div>
+  </div>
+
+  <div class="tiga" id="tiga"></div>
+
+  <section>
+    <h2>Kurva-S</h2>
+    <div class="card">
+      <div id="kurva"></div>
+      <div class="legend">
+        <span><i class="swatch" style="border-color:var(--bambu)"></i>Fisik aktual</span>
+        <span><i class="swatch" style="border-color:var(--bambu);border-top-style:dashed"></i>Fisik rencana</span>
+        <span><i class="swatch" style="border-color:var(--uv)"></i>Dana aktual</span>
+        <span><i class="swatch" style="border-color:var(--uv);border-top-style:dashed"></i>Dana rencana</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Enam pekerjaan</h2>
+    <div class="card" id="pos"></div>
+  </section>
+
+  <section>
+    <h2>Catatan hari ini</h2>
+    <div class="card" id="hariini"></div>
+  </section>
+
+  <section>
+    <h2>Kendala terakhir</h2>
+    <div class="card log" id="log"></div>
+  </section>
+
+  <footer>
+    <span id="fupd">—</span>
+    <span>PT Cantigi Tumuwuh Pageuh</span>
+  </footer>
+</div>
+
+<script>
+/* ============================================================
+   BASELINE — dari RAB_I_Budidaya_Mawar_I_Cantigi_I_Garut_REV.xlsx
+   Ubah hanya bila RAB direvisi.
+   ============================================================ */
+const PIN = "2000";                 // kosongkan ("") untuk buka tanpa kode
+const MULAI = "2026-08-03";         // Senin minggu ke-1 proyek
+const TOTAL = 375812000, INVESTOR = 298812000;
+
+const POS = [
+ {id:"gh_mat", nm:"Pengadaan Material Greenhouse", pagu:120555000, s:3, e:8,  who:"Investor"},
+ {id:"gh_kon", nm:"Konstruksi GH & Survei Lahan",  pagu:70000000,  s:2, e:10, who:"Investor"},
+ {id:"sarana", nm:"Sarana Produksi & Media Tanam", pagu:40417000,  s:5, e:7,  who:"Investor"},
+ {id:"tanam",  nm:"Penanaman Bibit Mawar",         pagu:77000000,  s:5, e:11, who:"Pengelola"},
+ {id:"nutrisi",nm:"Nutrisi & Fungisida",           pagu:20000000,  s:9, e:12, who:"Investor"},
+ {id:"operasi",nm:"Tenaga Kerja & Operasional",    pagu:47840000,  s:9, e:24, who:"Investor"},
+];
+POS.forEach(p => p.bobot = p.pagu / TOTAL);
+
+const PATOKAN = {
+ gh_mat :[[0,"Belum ada material di lokasi"],[20,"Bambu besar & sedang datang"],[45,"Bambu kecil lengkap"],[65,"Plastik UV & screen net datang"],[85,"Terpal, paku, kawat lengkap"],[100,"Seluruh material di lokasi"]],
+ gh_kon :[[0,"Survei lahan belum jalan"],[15,"Lahan rata, titik tiang ditandai"],[45,"Tiang berdiri & dicor"],[70,"Rangka atap terpasang"],[90,"Plastik UV & dinding terpasang"],[100,"Greenhouse berdiri, siap pakai"]],
+ sarana :[[0,"Belum mulai"],[25,"Pupuk kandang & kompos masuk"],[50,"Bedengan dibentuk"],[75,"Mesin Sanchin & selang terpasang"],[95,"Instalasi listrik & air jalan"],[100,"Bedengan siap tanam"]],
+ tanam  :[[0,"Bibit belum datang"],[20,"Bibit tahap 1 datang & diaklimatisasi"],[45,"±9.000 batang tertanam"],[70,"±14.000 batang tertanam"],[90,"±18.000 batang tertanam"],[100,"20.000 batang tertanam"]],
+ nutrisi:[[0,"Belum mulai"],[25,"Paket nutrisi bulan 1 diaplikasikan"],[50,"Fungisida bulan 1 diaplikasikan"],[75,"Perawatan bulan 2 jalan"],[100,"Jadwal perawatan rutin terbentuk"]],
+ operasi:[[0,"Belum ada tenaga tetap"],[20,"Tenaga ahli mulai bekerja"],[40,"2 pegawai kebun aktif"],[60,"Operasional bulan 2 jalan"],[80,"Operasional bulan 3 jalan"],[100,"Kebun beroperasi penuh"]],
+};
+
+const MGG=[3,4,5,6,7,8,9,10,11,12,16,20,24];
+const RENC_TOT=[48430000,0,44200000,47650000,93400000,1875000,31500000,12500000,19000000,26377000,16960000,16960000,16960000];
+const AKHIR = 24;
+
+/* contoh — tampil bila data.json belum ada */
+const DEMO=[
+ {t:"2026-08-24",p:[18,12,0,0,0,0],r:[28430000,20000000,0,0,0,0],k:"Hujan sore, pengecoran 6 titik tiang tertunda",b:"Lanjut cor 12 titik + bongkar bambu kiriman kedua",f:""},
+ {t:"2026-09-14",p:[62,48,30,15,0,0],r:[68080000,32500000,12000000,20000000,0,0],k:"",b:"Pasang rangka atap bentang 3–5",f:""},
+ {t:"2026-09-28",p:[88,66,72,40,0,0],r:[110780000,45000000,40417000,39000000,0,0],k:"Kiriman plastik UV mundur 4 hari dari pabrik",b:"Lanjut penanaman blok B, target 2.500 batang",f:""},
+];
+
+/* ============================ hitung ============================ */
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const wk = d => Math.floor((new Date(d)-new Date(MULAI))/6048e5)+1;
+const rp = n => "Rp "+Math.round(n).toLocaleString("id-ID");
+const jt = n => (n/1e6).toFixed(n>=1e8?0:1).replace(".",",")+" jt";
+const esc = s => String(s||"").replace(/[<>&]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;"}[c]));
+const tgl = d => new Date(d).toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"});
+
+function rencanaFisik(w){
+  return POS.reduce((a,p)=>a+p.bobot*clamp((w-p.s+1)/(p.e-p.s+1),0,1),0)*100;
+}
+function rencanaDana(w){
+  let k=0; for(let i=0;i<MGG.length;i++) if(MGG[i]<=w) k+=RENC_TOT[i];
+  return k/TOTAL*100;
+}
+function patokan(id,v){
+  const b=PATOKAN[id]; let t=b[0][1];
+  for(const [p,x] of b) if(v>=p) t=x;
+  return t;
+}
+
+/* ============================ gambar ============================ */
+function render(data){
+  const E=data.filter(Boolean).filter(e=>e&&e.t).sort((a,b)=>a.t<b.t?-1:1);
+  if(!E.length){document.getElementById("app").innerHTML='<div class="empty">Belum ada laporan masuk.</div>';return;}
+  const last=E[E.length-1], w=clamp(wk(last.t),1,AKHIR);
+
+  const fisik = POS.reduce((a,p,i)=>a+p.bobot*(last.p[i]||0),0);
+  const danaRp = (last.r||[]).reduce((a,b)=>a+(b||0),0);
+  const dana = danaRp/TOTAL*100;
+  const invRp = POS.reduce((a,p,i)=>a+(p.who==="Investor"?(last.r[i]||0):0),0);
+
+  document.getElementById("ew").textContent = "Minggu "+w+" dari "+AKHIR;
+  document.getElementById("ed").textContent = tgl(last.t);
+  document.getElementById("fupd").textContent = "Diperbarui "+tgl(last.t);
+
+  /* --- neraca --- */
+  const lo=Math.min(fisik,dana), hi=Math.max(fisik,dana), gap=fisik-dana;
+  const ahead = gap>=0;
+  let bh="";
+  bh+='<div class="axis"></div>';
+  for(let i=0;i<=4;i++) bh+=`<div class="tick" style="left:${i*25}%"></div>`;
+  bh+=`<div class="span ${ahead?"ahead":"behind"}" style="left:${lo}%;width:${hi-lo}%"></div>`;
+  bh+=`<div class="pip up" style="left:${clamp(fisik,8,92)}%">
+        <div class="v" style="color:var(--bambu)">${fisik.toFixed(0)}%</div>
+        <div class="l">kerja jadi</div>
+        <div class="stem" style="background:var(--bambu)"></div></div>`;
+  bh+=`<div class="pip dn" style="left:${clamp(dana,8,92)}%">
+        <div class="stem" style="background:var(--uv)"></div>
+        <div class="l">uang keluar</div>
+        <div class="v" style="color:var(--uv)">${dana.toFixed(0)}%</div></div>`;
+  document.getElementById("beam").innerHTML=bh;
+
+  const g=Math.abs(gap).toFixed(0);
+  const vd=document.getElementById("verdict");
+  vd.className="verdict "+(ahead?"good":"warn");
+  vd.innerHTML = Math.abs(gap)<1.5
+    ? "Kerja dan uang <b>berjalan seimbang</b>. Tidak ada yang mendahului."
+    : ahead
+      ? `Kerja <b>mendahului uang ${g} poin</b>. Pekerjaan jadi lebih cepat daripada dana yang keluar — posisi aman.`
+      : `Uang <b>mendahului kerja ${g} poin</b>. Dana keluar lebih cepat daripada pekerjaan jadi — perlu ditanyakan penyebabnya.`;
+
+  /* --- tiga angka --- */
+  const rd = rencanaDana(w), rf = rencanaFisik(w);
+  document.getElementById("tiga").innerHTML=`
+   <div class="num full"><div class="l">Setoran investor terpakai</div>
+     <div class="v">${jt(invRp)}</div>
+     <div class="n">dari pagu ${jt(INVESTOR)} &middot; sisa ${jt(INVESTOR-invRp)}</div>
+     <div class="track"><i style="width:${clamp(invRp/INVESTOR*100,0,100)}%"></i></div></div>
+   <div class="num"><div class="l">Dana proyek</div><div class="v">${dana.toFixed(0)}%</div>
+     <div class="n">rencana ${rd.toFixed(0)}%</div></div>
+   <div class="num"><div class="l">Progres fisik</div><div class="v">${fisik.toFixed(0)}%</div>
+     <div class="n">rencana ${rf.toFixed(0)}%</div></div>`;
+
+  /* --- kurva-S --- */
+  document.getElementById("kurva").innerHTML=kurva(E);
+
+  /* --- enam pekerjaan --- */
+  document.getElementById("pos").innerHTML = POS.map((p,i)=>{
+    const pv=last.p[i]||0, rv=last.r[i]||0, dv=rv/p.pagu*100;
+    const plan=clamp((w-p.s+1)/(p.e-p.s+1),0,1)*100;
+    return `<div class="pos">
+      <div class="top"><div class="nm">${p.nm}</div>
+        <div class="bobot">bobot ${(p.bobot*100).toFixed(1)}%</div></div>
+      <div class="patokan">${esc(patokan(p.id,pv))}</div>
+      <div class="bars">
+        <div class="k">kerja</div>
+        <div class="bar"><i style="width:${clamp(pv,0,100)}%;background:var(--bambu)"></i>
+          <div class="plan" style="left:${clamp(plan,0,100)}%"></div></div>
+        <div class="n">${pv}%</div>
+        <div class="k">uang</div>
+        <div class="bar"><i style="width:${clamp(dv,0,100)}%;background:var(--uv)"></i></div>
+        <div class="n">${dv.toFixed(0)}%</div>
+      </div></div>`;
+  }).join("");
+
+  /* --- catatan hari ini --- */
+  let hi_="";
+  if(last.k) hi_+=`<div class="note issue"><div class="k">Kendala</div><p>${esc(last.k)}</p></div>`;
+  if(last.b) hi_+=`<div class="note"><div class="k">Rencana besok</div><p>${esc(last.b)}</p></div>`;
+  if(last.f) hi_+=`<div class="note"><div class="k">Foto</div><p><a href="${esc(last.f)}" target="_blank" rel="noopener">Lihat foto lapangan</a></p></div>`;
+  if(!hi_) hi_=`<div class="empty">Tidak ada kendala dilaporkan. Pekerjaan berjalan sesuai rencana harian.</div>`;
+  document.getElementById("hariini").innerHTML=hi_;
+
+  /* --- riwayat kendala --- */
+  const iss=E.filter(e=>e.k).slice(-5).reverse();
+  document.getElementById("log").innerHTML = iss.length
+    ? iss.map(e=>`<div class="row"><div class="when">${tgl(e.t)} &middot; Minggu ${wk(e.t)}</div>
+        <p style="margin:0;font-size:14px">${esc(e.k)}</p></div>`).join("")
+    : `<div class="empty">Belum ada kendala tercatat sejak proyek mulai.</div>`;
+}
+
+/* ============================ kurva-S ============================ */
+function kurva(E){
+  const W=420,H=200,L=30,R=8,T=10,B=24;
+  const px=w=>L+(w-1)/(AKHIR-1)*(W-L-R);
+  const py=v=>T+(1-v/100)*(H-T-B);
+  const line=(pts,col,dash)=>pts.length<2?"":
+    `<path d="M${pts.map(p=>px(p[0]).toFixed(1)+","+py(p[1]).toFixed(1)).join("L")}"
+      fill="none" stroke="${col}" stroke-width="${dash?1.6:2.4}" stroke-linejoin="round"
+      stroke-linecap="round" ${dash?'stroke-dasharray="4 4" opacity=".75"':''}/>`;
+
+  const pf=[],pd=[];
+  for(let w=1;w<=AKHIR;w++){pf.push([w,rencanaFisik(w)]);pd.push([w,rencanaDana(w)]);}
+  const af=E.map(e=>[clamp(wk(e.t),1,AKHIR),POS.reduce((a,p,i)=>a+p.bobot*(e.p[i]||0),0)]);
+  const ad=E.map(e=>[clamp(wk(e.t),1,AKHIR),(e.r||[]).reduce((a,b)=>a+(b||0),0)/TOTAL*100]);
+
+  let g="";
+  for(let v=0;v<=100;v+=25){
+    g+=`<line x1="${L}" y1="${py(v)}" x2="${W-R}" y2="${py(v)}" stroke="#CBD8D4" stroke-width="1"/>
+        <text x="${L-6}" y="${py(v)+3.5}" text-anchor="end" font-family="IBM Plex Mono,monospace"
+          font-size="9" fill="#5C736C">${v}</text>`;
+  }
+  for(const w of [1,6,12,18,24]){
+    g+=`<text x="${px(w)}" y="${H-6}" text-anchor="middle" font-family="IBM Plex Mono,monospace"
+          font-size="9" fill="#5C736C">M${w}</text>`;
+  }
+  const now=af.length?af[af.length-1][0]:1;
+  g+=`<line x1="${px(now)}" y1="${T}" x2="${px(now)}" y2="${H-B}" stroke="#2F4A42"
+        stroke-width="1" stroke-dasharray="2 3" opacity=".35"/>`;
+
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img"
+      aria-label="Kurva-S progres fisik dan serapan dana terhadap rencana">
+    ${g}${line(pd,"#5E9A93",1)}${line(pf,"#C08A3E",1)}
+    ${line(ad,"#5E9A93",0)}${line(af,"#C08A3E",0)}
+    ${af.map(p=>`<circle cx="${px(p[0])}" cy="${py(p[1])}" r="3" fill="#C08A3E"/>`).join("")}
+    ${ad.map(p=>`<circle cx="${px(p[0])}" cy="${py(p[1])}" r="3" fill="#5E9A93"/>`).join("")}
+  </svg>`;
+}
+
+/* ============================ muat ============================ */
+async function muat(){
+  let d=DEMO;
+  try{
+    const res=await fetch("data.json",{cache:"no-store"});
+    if(res.ok){const j=await res.json(); if(Array.isArray(j)&&j.filter(Boolean).length) d=j;}
+  }catch(e){}
+  render(d);
+}
+function buka(){
+  document.getElementById("gate").hidden=true;
+  document.getElementById("app").hidden=false;
+  muat();
+}
+if(!PIN){buka();}
+else{
+  document.getElementById("gate").hidden=false;
+  const inp=document.getElementById("pin"),err=document.getElementById("gerr");
+  const cek=()=>{
+    if(inp.value===PIN){try{sessionStorage.setItem("mc","1")}catch(e){}buka();}
+    else{err.textContent="Kode belum cocok. Coba lagi.";inp.value="";inp.focus();}
+  };
+  document.getElementById("masuk").addEventListener("click",cek);
+  inp.addEventListener("keydown",e=>{if(e.key==="Enter")cek()});
+  let ok=false; try{ok=sessionStorage.getItem("mc")==="1"}catch(e){}
+  if(ok) buka(); else inp.focus();
+}
+</script>
+</body>
+</html>
