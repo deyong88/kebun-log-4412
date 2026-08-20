@@ -57,6 +57,11 @@ h1 em{font-style:normal;display:block;color:var(--uv)}
 .next .l{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--lumut-2)}
 .next .d{font-size:13.5px;font-weight:500;margin-top:2px}
 .next .a{font-family:var(--mono);font-size:17px;font-weight:600;color:var(--bambu);white-space:nowrap}
+.next.late{border-left-color:var(--mawar);background:#FBF2F4;border-color:#E4C3CC}
+.next.late .l{color:var(--mawar)}
+.next.late .a{color:var(--mawar)}
+.next .sub2{font-size:11.5px;color:var(--lumut-2);margin-top:2px}
+.next.late .sub2{color:#7C4453}
 
 .alarm{margin-top:8px;background:#FBF2F4;border:1px solid #E4C3CC;border-left:3px solid var(--mawar);
   border-radius:3px;padding:12px 13px}
@@ -242,8 +247,17 @@ function render(raw){
   document.getElementById("ed").textContent=tglPjg(akhir);
   document.getElementById("fupd").textContent="Diperbarui "+tglPjg(akhir);
 
-  let ber=null;
-  for(let i=0;i<MGG.length;i++) if(MGG[i]>w && RENC_INV[i]>0){ber={m:MGG[i],v:RENC_INV[i]};break;}
+  /* Setoran berikutnya dihitung dari TOTAL yang sudah masuk, bukan dari nomor minggu.
+     Investor sering menyetor lebih awal atau lebih besar; cara ini tetap akurat. */
+  const TOL=100000;                                // abaikan selisih receh < Rp 100 rb
+  let ber=null, kum=0, wajib=0;
+  for(let i=0;i<MGG.length;i++){
+    kum+=RENC_INV[i];
+    if(MGG[i]<=w) wajib=kum;                       // yang semestinya sudah masuk sampai minggu ini
+    if(!ber && RENC_INV[i]>0 && kum-setoran>TOL)
+      ber={m:MGG[i], v:kum-setoran, penuh:RENC_INV[i]};
+  }
+  const telat = wajib-setoran;                     // >0 berarti setoran tertinggal dari jadwal
 
   let h=`<div class="slab"><div class="cap">Total setoran diterima</div><div class="body">
       <div class="big"><span class="v">${jt(setoran)}</span><span class="u">jt</span>
@@ -252,9 +266,24 @@ function render(raw){
       <div class="track"><i style="width:${clamp(setoran/INVESTOR*100,0,100)}%;background:var(--uv)"></i></div>
     </div></div>`;
 
-  if(ber) h+=`<div class="next"><div><div class="l">Setoran berikutnya</div>
-      <div class="d">M${ber.m} &middot; ${tglPjg(tgWk(ber.m))}</div></div>
+  if(telat>TOL){
+    /* setoran tertinggal dari jadwal — yang ditampilkan adalah tunggakannya, bukan termin berikutnya */
+    h+=`<div class="next late"><div><div class="l">Setoran tertunggak</div>
+      <div class="d">Jadwal sampai Minggu ${w}</div>
+      <div class="sub2">Semestinya ${jt(wajib)} jt &middot; diterima ${jt(setoran)} jt</div></div>
+      <div class="a">${jt(telat)} jt</div></div>`;
+  } else if(ber){
+    const kurang = ber.penuh-ber.v > TOL;          // sebagian sudah tertutup setoran lebih awal
+    h+=`<div class="next"><div><div class="l">Setoran berikutnya</div>
+      <div class="d">M${ber.m} &middot; ${tglPjg(tgWk(ber.m))}</div>
+      ${kurang?`<div class="sub2">Sisa termin &mdash; dari ${jt(ber.penuh)} jt, sebagian sudah tertutup</div>`:``}
+      </div>
       <div class="a">${jt(ber.v)} jt</div></div>`;
+  } else if(setoran>=INVESTOR-TOL){
+    h+=`<div class="next"><div><div class="l">Setoran</div>
+      <div class="d">Seluruh pagu sudah disetor penuh</div></div>
+      <div class="a">${jt(INVESTOR)} jt</div></div>`;
+  }
 
   const pR=setoran?realisasi/setoran*100:0, pS=setoran?sisa/setoran*100:0;
   h+=`<div class="duo">
