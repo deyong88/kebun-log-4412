@@ -42,6 +42,16 @@ h1 em{font-style:normal;display:block;color:var(--uv)}
 .big .u{font-family:var(--mono);font-size:14px;color:var(--lumut-2)}
 .big .pc{margin-left:auto;font-family:var(--mono);font-size:17px;font-weight:600;color:var(--lumut-2)}
 .slab .n{font-size:12.5px;color:var(--lumut-2);margin-top:7px}
+.stack{height:7px;background:var(--kabut);border-radius:3px;margin-top:11px;overflow:hidden;display:flex}
+.stack i{height:100%;transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.rinci{margin-top:11px;border-top:1px solid var(--garis);padding-top:9px}
+.rinci .r{display:flex;align-items:baseline;gap:8px;padding:3px 0}
+.rinci .dot{width:8px;height:8px;border-radius:2px;flex:none;transform:translateY(-1px)}
+.rinci .who{font-size:12.5px;flex:1}
+.rinci .amt{font-family:var(--mono);font-size:12.5px;font-weight:500}
+.rinci .of{font-family:var(--mono);font-size:9.5px;color:var(--lumut-2);width:96px;
+  text-align:right;white-space:nowrap}
+.chip.png{background:#F6EBDA;color:#8A6224}
 .track{height:5px;background:var(--kabut);border-radius:3px;margin-top:11px;overflow:hidden}
 .track i{display:block;height:100%;border-radius:3px;transition:width .7s cubic-bezier(.2,.8,.2,1)}
 
@@ -179,7 +189,7 @@ footer{margin-top:30px;padding-top:16px;border-top:1px solid var(--garis);
    ============================================================ */
 const PIN   = "4821";              // kosongkan ("") untuk buka tanpa kode
 const MULAI = "2026-08-03";        // Senin minggu ke-1 proyek
-const TOTAL = 375812000, INVESTOR = 298812000;
+const TOTAL = 375812000, INVESTOR = 298812000, PENGELOLA = 77000000;
 
 const POS = [
  {id:"gh_mat", nm:"Pengadaan Material Greenhouse", pagu:120555000, s:3, e:8 },
@@ -190,6 +200,7 @@ const POS = [
  {id:"operasi",nm:"Tenaga Kerja & Operasional",    pagu:47840000,  s:9, e:24},
 ];
 POS.forEach(p => p.bobot = p.pagu / TOTAL);
+const SUMBER = ["Investor","Pengelola"];
 const KAT = ["Material GH","Konstruksi GH","Sarana & Media","Penanaman","Nutrisi","Operasional","Di luar RAB"];
 
 const PATOKAN = {
@@ -206,7 +217,8 @@ const RENC_INV=[48430000,0,24200000,47650000,74400000,1875000,12500000,12500000,
 const AKHIR=24;
 
 const DEMO=[
- {x:"s",t:"2026-08-16",v:48400000,d:"Pencairan alokasi pertama (M3)"},
+ {x:"s",t:"2026-08-16",v:48400000,u:0,d:"Pencairan alokasi pertama (M3)"},
+ {x:"s",t:"2026-08-20",v:15000000,u:1,d:"Modal pengelola — uang muka bibit"},
  {x:"m",t:"2026-08-17",v:26000000,c:0,d:"Bambu besar 400 batang, termin 1"},
  {x:"m",t:"2026-08-18",v:2000000,c:5,d:"Pembelian pacul & alat kebun"},
  {x:"g",t:"2026-08-18",p:[50,20,0,0,0,0]},
@@ -232,9 +244,11 @@ function render(raw){
   const M=R.filter(e=>e.x==="m");
   const G=R.filter(e=>e.x==="g").sort((a,b)=>a.t<b.t?-1:1);
 
-  const setoran   = S.reduce((a,e)=>a+(e.v||0),0);
+  const setoran   = S.filter(e=>(e.u||0)===0).reduce((a,e)=>a+(e.v||0),0);  // porsi investor
+  const modalPng  = S.filter(e=>e.u===1).reduce((a,e)=>a+(e.v||0),0);        // porsi pengelola
+  const masuk     = setoran+modalPng;
   const realisasi = M.reduce((a,e)=>a+(e.v||0),0);
-  const sisa      = setoran-realisasi;
+  const sisa      = masuk-realisasi;
   const luarArr   = M.filter(e=>e.c===6);
   const luar      = luarArr.reduce((a,e)=>a+(e.v||0),0);
   const perPos    = POS.map((_,i)=>M.filter(e=>e.c===i).reduce((a,e)=>a+(e.v||0),0));
@@ -259,11 +273,23 @@ function render(raw){
   }
   const telat = wajib-setoran;                     // >0 berarti setoran tertinggal dari jadwal
 
-  let h=`<div class="slab"><div class="cap">Total setoran diterima</div><div class="body">
-      <div class="big"><span class="v">${jt(setoran)}</span><span class="u">jt</span>
-        <span class="pc">${(setoran/INVESTOR*100).toFixed(0)}%</span></div>
-      <div class="n">dari pagu ${jt(INVESTOR)} jt &middot; belum disetor ${jt(INVESTOR-setoran)} jt</div>
-      <div class="track"><i style="width:${clamp(setoran/INVESTOR*100,0,100)}%;background:var(--uv)"></i></div>
+  const baris=(warna,nama,nilai,pagu)=>`<div class="r">
+      <span class="dot" style="background:${warna}"></span>
+      <span class="who">${nama}</span>
+      <span class="amt">${jt(nilai)} jt</span>
+      <span class="of">${(nilai/pagu*100).toFixed(0)}% dari ${jt(pagu)} jt</span></div>`;
+
+  let h=`<div class="slab"><div class="cap">Dana masuk ke kas proyek</div><div class="body">
+      <div class="big"><span class="v">${jt(masuk)}</span><span class="u">jt</span>
+        <span class="pc">${(masuk/TOTAL*100).toFixed(0)}%</span></div>
+      <div class="n">dari total kebutuhan modal ${jt(TOTAL)} jt</div>
+      <div class="stack">
+        <i style="width:${clamp(setoran/TOTAL*100,0,100)}%;background:var(--uv)"></i>
+        <i style="width:${clamp(modalPng/TOTAL*100,0,100)}%;background:var(--bambu)"></i></div>
+      <div class="rinci">
+        ${baris("var(--uv)","Investor",setoran,INVESTOR)}
+        ${baris("var(--bambu)","Pengelola",modalPng,PENGELOLA)}
+      </div>
     </div></div>`;
 
   if(telat>TOL){
@@ -285,7 +311,7 @@ function render(raw){
       <div class="a">${jt(INVESTOR)} jt</div></div>`;
   }
 
-  const pR=setoran?realisasi/setoran*100:0, pS=setoran?sisa/setoran*100:0;
+  const pR=masuk?realisasi/masuk*100:0, pS=masuk?sisa/masuk*100:0;
   h+=`<div class="duo">
     <div class="slab"><div class="cap">Dana terealisasi</div><div class="body">
       <div class="big"><span class="v">${jt(realisasi)}</span><span class="u">jt</span>
@@ -308,13 +334,14 @@ function render(raw){
     .sort((a,b)=>a.t===b.t?(a.masuk?-1:1):(a.t<b.t?1:-1));
   document.getElementById("mutasi").innerHTML = alur.length
     ? alur.map(e=>{
-        const kat = e.masuk ? "Setoran masuk" : (KAT[e.c]||"Tanpa kategori");
-        const cls = e.masuk ? "in" : (e.c===6 ? "out" : "");
+        const kat = e.masuk ? "Setoran "+(SUMBER[e.u||0]||"Investor").toLowerCase()
+                            : (KAT[e.c]||"Tanpa kategori");
+        const cls = e.masuk ? (e.u===1?"png":"in") : (e.c===6 ? "out" : "");
         return `<div class="mrow">
           <div class="when">${tglPdk(e.t)}<br>${new Date(e.t).getFullYear()}</div>
           <div class="mid"><div class="desc">${esc(e.d)||"—"}</div>
             <span class="chip ${cls}">${esc(kat)}</span></div>
-          <div class="amt ${e.masuk?"plus":"minus"}">${e.masuk?"+":"−"}${num(e.v)}</div>
+          <div class="amt ${e.masuk?"plus":"minus"}" style="${e.masuk&&e.u===1?"color:var(--bambu)":""}">${e.masuk?"+":"−"}${num(e.v)}</div>
         </div>`;}).join("")
     : `<div class="empty">Belum ada mutasi tercatat.</div>`;
   const n=alur.length;
