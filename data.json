@@ -1,5 +1,6 @@
 [null
-,{"x":"s","t":"2026-08-11","v":48400000,"d":"Pencairan alokasi pertama (M3)"}
+,{"x":"s","t":"2026-08-11","v":48400000,"u":0,"d":"Pencairan alokasi pertama (M3)"}
+,{"x":"s","t":"2026-08-21","v":10000000,"u":1,"d":"Pencairan alokasi pertama "}
 
 
 
@@ -118,10 +119,11 @@
 
 
 
+,{"x":"m","t":"2026-08-12","v":20000000,"c":1,"d":"Termin pertaman pembuatan GH"}
+,{"x":"m","t":"2026-08-12","v":20000000,"c":0,"d":"Termin pertama material GH (Bambu)"}
+,{"x":"m","t":"2026-08-12","v":5000000,"c":0,"d":"Petty cash material (Dani Supriyadi)"}
+,{"x":"m","t":"2026-08-22","v":10000000,"c":3,"d":"DP Bibit mawar"}
 
-,{"x":"m","t":"2026-08-12","v":20000000,"c":1,"d":"Pembayaran Pertama jasa borongan GH"}
-,{"x":"m","t":"2026-08-12","v":20000000,"c":0,"d":"Pembayaran Pertama Material bambu"}
-,{"x":"m","t":"2026-08-12","v":5000000,"c":0,"d":"Petty Cash pemebelian Material"}
 
 
 
@@ -1017,9 +1019,7 @@
 
 
 
-
-
-,{"x":"g","t":"2026-08-15","p":[50,20,0,0,0,0]}
+,{"x":"g","t":"2026-08-18","p":[50,30,0,10,0,0]}
 
 
 
