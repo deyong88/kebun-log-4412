@@ -138,6 +138,48 @@ footer{margin-top:30px;padding-top:16px;border-top:1px solid var(--garis);
 #gate button{width:100%;margin-top:10px;padding:13px;border:0;border-radius:3px;background:var(--bambu);
   color:#2A1C08;font-family:var(--body);font-weight:600;font-size:14px;cursor:pointer}
 #gate .err{color:#E8899E;font-size:12.5px;margin-top:10px;min-height:18px}
+/* --- rincian petty cash --- */
+.pcbar{margin-top:10px;position:relative}
+.pcbtn{width:100%;background:var(--kertas);border:1px solid var(--garis);border-radius:3px;padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;font-family:var(--body);font-size:13.5px;font-weight:500;color:var(--lumut);transition:border-color .2s,background .2s}
+.pcbtn:hover{border-color:var(--bambu)}
+.pcbtn.on{border-color:var(--bambu);background:#FCF7EE}
+.pcbtn .ic{width:20px;height:20px;flex:none;display:grid;place-items:center;color:var(--bambu)}
+.pcbtn .ic svg{width:18px;height:18px}
+.pcbtn .ct{margin-left:auto;font-family:var(--mono);font-size:10px;font-weight:600;color:var(--lumut-2);background:var(--kabut);border-radius:20px;padding:1px 8px}
+.pcbtn .cv{font-family:var(--mono);font-size:9.5px;color:var(--lumut-2);transition:transform .25s}
+.pcbtn.on .cv{transform:rotate(180deg)}
+.drop{overflow:hidden;max-height:0;opacity:0;transition:max-height .28s ease,opacity .2s}
+.drop.open{max-height:360px;opacity:1;margin-top:6px;overflow-y:auto}
+.drop .inner{background:var(--kertas);border:1px solid var(--garis);border-radius:3px;padding:5px}
+.pcopt{display:flex;align-items:center;gap:11px;padding:11px;border-radius:2px;cursor:pointer;transition:background .15s}
+.pcopt:hover{background:var(--kabut)}
+.pcopt .no{min-width:34px;height:26px;padding:0 6px;flex:none;border-radius:3px;background:#F6EBDA;color:#8A6224;font-family:var(--mono);font-size:10.5px;font-weight:600;display:grid;place-items:center}
+.pcopt .info{flex:1;min-width:0;display:flex;flex-direction:column}
+.pcopt .t1{font-size:13.5px;font-weight:500;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pcopt .t2{font-family:var(--mono);font-size:10px;color:var(--lumut-2);margin-top:2px}
+.pcopt .val{font-family:var(--mono);font-size:12.5px;font-weight:500;white-space:nowrap}
+.panel{overflow:hidden;max-height:0;opacity:0;transition:max-height .35s ease,opacity .25s}
+.panel.open{max-height:2400px;opacity:1;margin-top:10px}
+.panel .head{background:var(--lumut);color:var(--kertas);border-radius:3px 3px 0 0;padding:11px 14px;display:flex;align-items:center;gap:10px}
+.panel .head .h1{font-family:var(--disp);font-weight:600;font-size:14px;line-height:1.2}
+.panel .head .h2{font-family:var(--mono);font-size:10px;color:#A8BDB6;margin-top:2px}
+.panel .head .close{margin-left:auto;background:#26413A;border:0;color:var(--kabut);width:26px;height:26px;border-radius:3px;cursor:pointer;font-size:15px;line-height:1;display:grid;place-items:center;flex:none}
+.panel .box{background:var(--kertas);border:1px solid var(--garis);border-top:0;border-radius:0 0 3px 3px;padding:6px 14px 12px}
+.katgrp{padding:6px 0}
+.katgrp .kh{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--bambu);font-weight:600;padding:6px 0 3px;border-bottom:1px solid var(--garis)}
+.katgrp .item{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--garis)}
+.katgrp .item:last-child{border-bottom:0}
+.item .isi{flex:1;min-width:0}
+.item .d{font-size:13px;line-height:1.3}
+.item .amt{font-family:var(--mono);font-size:12.5px;font-weight:500;white-space:nowrap;padding-top:1px}
+.item .nota{display:inline-block;margin-top:5px;font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--lumut-2);background:var(--kabut);border:1px solid var(--garis);border-radius:2px;padding:3px 7px;text-decoration:none}
+.item .nota:hover{border-color:var(--bambu);color:var(--bambu)}
+.sumrow{display:flex;justify-content:space-between;align-items:baseline;padding:9px 0 2px;border-top:2px solid var(--garis)}
+.sumrow.first{margin-top:4px}
+.sumrow .lab{font-size:12.5px;color:var(--lumut-2)}
+.sumrow .val{font-family:var(--mono);font-size:14px;font-weight:600}
+.sumrow.sisa .val{color:var(--uv)}
+.sumrow.neg .val,.sumrow.neg .lab{color:var(--mawar)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -169,6 +211,7 @@ footer{margin-top:30px;padding-top:16px;border-top:1px solid var(--garis);
       <div class="fade" id="fade"></div>
     </div>
     <div class="mhint" id="mhint"></div>
+    <div id="pcwrap"></div>
   </section>
 
   <section>
@@ -348,6 +391,31 @@ function render(raw){
   document.getElementById("mhint").textContent = n>5 ? n+" transaksi · gulir untuk melihat semua" : n+" transaksi";
   document.getElementById("fade").hidden = n<=5;
 
+  /* --- rincian petty cash --- */
+  const RIN=R.filter(e=>e.x==="r");
+  const PCH=M.filter(e=>e.pc);
+  window.PCDATA={};
+  PCH.forEach(h=>{ window.PCDATA[h.pc]={hdr:h,items:RIN.filter(e=>e.pc===h.pc)}; });
+  const pcwrap=document.getElementById("pcwrap");
+  if(pcwrap){
+    if(PCH.length){
+      const opts=PCH.map(h=>{
+        const D=window.PCDATA[h.pc];
+        return '<div class="pcopt" onclick="pcOpen(\''+h.pc+'\')">'
+          +'<span class="no">'+esc(h.pc)+'</span>'
+          +'<span class="info"><span class="t1">'+(esc(h.d)||'Petty cash')+'</span>'
+          +'<span class="t2">'+tglPdk(h.t)+' \u00b7 '+D.items.length+' item</span></span>'
+          +'<span class="val">'+num(h.v)+'</span></div>';
+      }).join("");
+      pcwrap.innerHTML='<div class="pcbar">'
+        +'<button class="pcbtn" id="pcbtn" onclick="pcToggle()">'
+        +'<span class="ic">'+PC_ICON+'</span><span>Rincian Petty Cash</span>'
+        +'<span class="ct">'+PCH.length+'</span><span class="cv">\u25be</span></button>'
+        +'<div class="drop" id="pcdrop"><div class="inner">'+opts+'</div></div>'
+        +'<div class="panel" id="pcpanel"><div id="pccontent"></div></div></div>';
+    } else { pcwrap.innerHTML=""; pcCur=null; }
+  }
+
   /* --- enam pekerjaan --- */
   document.getElementById("pos").innerHTML = POS.map((p,i)=>{
     const pv=prog[i]||0, dv=perPos[i]/p.pagu*100;
@@ -366,6 +434,38 @@ function render(raw){
         <div class="n">${dv.toFixed(0)}%</div>
       </div></div>`;
   }).join("");
+}
+
+/* ====================== rincian petty cash ====================== */
+const PC_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6"/><path d="m9 14 3 3 3-3"/></svg>';
+let pcCur=null;
+function pcToggle(){const d=document.getElementById('pcdrop'),b=document.getElementById('pcbtn');if(!d||!b)return;const on=d.classList.toggle('open');b.classList.toggle('on',on);if(!on)pcClose();}
+function pcClose(){pcCur=null;const p=document.getElementById('pcpanel');if(p)p.classList.remove('open');}
+function pcOpen(id){
+  if(pcCur===id){pcClose();return;}
+  pcCur=id;
+  const D=(window.PCDATA||{})[id]; if(!D)return;
+  const h=D.hdr, items=D.items;
+  const used=items.reduce((a,e)=>a+(e.v||0),0), sisa=h.v-used, neg=sisa<0;
+  const byk={}; items.forEach(e=>{(byk[e.c]=byk[e.c]||[]).push(e);});
+  let body="";
+  KAT.forEach((kn,ci)=>{ if(!byk[ci])return;
+    body+='<div class="katgrp"><div class="kh">'+esc(kn)+'</div>';
+    byk[ci].forEach(e=>{
+      const nota=e.n?'<a class="nota" href="'+encodeURI(e.n)+'" target="_blank" rel="noopener">\ud83e\uddfe lihat nota</a>':'';
+      body+='<div class="item"><div class="isi"><div class="d">'+(esc(e.d)||'\u2014')+'</div>'+nota+'</div><div class="amt">'+num(e.v)+'</div></div>';
+    });
+    body+='</div>';
+  });
+  const html='<div class="head"><div><div class="h1">'+esc(h.pc)+' \u00b7 '+(esc(h.d)||'Petty cash')+'</div>'
+    +'<div class="h2">'+tglPjg(h.t)+' \u00b7 pagu Rp '+num(h.v)+'</div></div>'
+    +'<button class="close" onclick="pcClose()" aria-label="Tutup">\u2715</button></div>'
+    +'<div class="box">'+body
+    +'<div class="sumrow first"><span class="lab">Total terpakai</span><span class="val">Rp '+num(used)+'</span></div>'
+    +'<div class="sumrow '+(neg?'neg':'sisa')+'"><span class="lab">'+(neg?'Melebihi pagu':'Sisa / dikembalikan')+'</span><span class="val">Rp '+num(Math.abs(sisa))+'</span></div>'
+    +'</div>';
+  document.getElementById('pccontent').innerHTML=html;
+  document.getElementById('pcpanel').classList.add('open');
 }
 
 /* ============================ muat ============================ */
