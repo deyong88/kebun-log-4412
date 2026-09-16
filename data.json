@@ -3,7 +3,7 @@
 ,{"x":"s","t":"2026-08-21","v":10000000,"u":1,"d":"Pencairan alokasi pertama "}
 ,{"x":"s","t":"2026-08-25","v":10000000,"u":1,"d":"Pencarran alokasi kedua"}
 ,{"x":"s","t":"2026-08-30","v":71850000,"u":0,"d":"Pencarran alokasi kedua"}
-
+,{"x":"s","t":"2026-09-15","v":74400000,"u":0,"d":"Pencarran alokasi ketiga"}
 
 
 
@@ -129,7 +129,7 @@
 ,{"x":"m","t":"2026-09-01","v":12500000,"c":1,"d":"Termin kedua pembuatan GH"}
 ,{"x":"m","t":"2026-09-02","v":22560000,"c":0,"d":"Plastik dan screen net"}
 ,{"x":"m","t":"2026-09-07","v":21000000,"c":0,"d":"Termin ketiga material GH (Bambu)"}
-
+,{"x":"m","t":"2026-09-15","v":11315000,"c":0,"d":"Termin keempat material GH (Bambu)"}
 
 
 
